@@ -45,10 +45,13 @@ Within ZAP, I created a new context specifically for the Juice Shop application.
 
 ![](screenshots/4.png)
 
-### User Configuration and Forced User Mode:
-I defined the authenticated user within ZAP's "Users" settings. Subsequently, I enabled "Forced User Mode," which instructs ZAP to perform all subsequent scans and requests as this authenticated user, mimicking a real attacker with valid credentials.
+### User Configuration:
+I defined the authenticated user within ZAP's "Users" settings. 
 
 ![](screenshots/5.png)
+
+### Forced User Mode:
+I enabled "Forced User Mode," which instructs ZAP to perform all subsequent scans and requests as this authenticated user, mimicking a real attacker with valid credentials.
 
 ![](screenshots/6.png)
 
