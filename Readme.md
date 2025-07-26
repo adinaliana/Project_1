@@ -23,11 +23,12 @@
 
 ---
 
-## Project Walk-through: Juice-Shop Authenticated Scan
+## Juice-Shop Authenticated Scan
 
 ### Environment Setup:
 I initiated the OWASP Juice Shop application within a Docker container on my Kali Linux machine. This provided a controlled and isolated environment for testing.
-Screenshot: Docker container running Juice Shop.
+
+![](screenshots/1.png)
 
 ### ZAP Proxy Configuration:
 I launched OWASP ZAP and configured it to intercept traffic from the Juice Shop application. I used the "Manual Explore" option, providing the Juice Shop's URL to begin the proxying process.
