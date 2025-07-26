@@ -64,7 +64,7 @@ With the authenticated session established, I initiated a series of automated sc
 ![](screenshots/7.png)
 
 ### Report Generation:
-Upon completion of the scans, I generated a concise HTML report from ZAP. This report provided a summary of identified alerts and detailed findings, which served as the basis for selecting a vulnerability to exploit.
+Upon completion of the scans, I generated a concise HTML/pdf report from ZAP. This report provided a summary of identified alerts and detailed findings, which served as the basis for selecting a vulnerability to exploit.
 
 ![](screenshots/8.png)
 
