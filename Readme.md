@@ -91,11 +91,12 @@ During my analysis, I observed other redirect mechanisms within the application,
 
 ![](screenshots/12.png)
 
-### Open Redirect Discovery & ZAP Validation:
+### Open Redirect Discovery:
 I clicked on the GitHub logo within the Juice Shop application. This action successfully redirected me to the official OWASP Juice Shop GitHub page. **The URL for this redirection was subsequently identified by OWASP ZAP as having an open redirect vulnerability during its analysis.**
 
 ![](screenshots/13.png)
 
+### ZAP Validation:
 In **ZAP's HTTP History tab**, I then identified the specific GET request that was made when clicking the GitHub logo. This request clearly showed the parameters being used for the redirect, confirming how the vulnerability could be leveraged.
 
 ![](screenshots/14.png)
