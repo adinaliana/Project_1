@@ -32,36 +32,38 @@ I initiated the OWASP Juice Shop application within a Docker container on my Kal
 
 ### ZAP Proxy Configuration:
 I launched OWASP ZAP and configured it to intercept traffic from the Juice Shop application. I used the "Manual Explore" option, providing the Juice Shop's URL to begin the proxying process.
-Screenshot: ZAP's Manual Explore screen with Juice Shop URL.
+
+![](screenshots/2.png)
 
 ### Authenticated Session Establishment:
 To perform an authenticated scan, I accessed the Juice Shop through ZAP's integrated browser (Firefox). I then logged in using legitimate administrator credentials. This step was crucial as it allowed ZAP to discover and test functionalities accessible only to authenticated users, providing a more comprehensive security assessment.
-Screenshot: Juice Shop login page in ZAP's browser.
-Screenshot: Successfully logged-in Juice Shop application.
+
+![](screenshots/3.png)
 
 ### Context and Authentication Configuration:
 Within ZAP, I created a new context specifically for the Juice Shop application. I configured its authentication method as "JSON-based Authentication," aligning with the application's login mechanism. This ensures that ZAP correctly handles session management during automated scans.
-Screenshot: ZAP Context configuration for Juice Shop.
-Screenshot: ZAP Authentication settings for JSON-based authentication.
+
+![](screenshots/4.png)
 
 ### User Configuration and Forced User Mode:
 I defined the authenticated user within ZAP's "Users" settings. Subsequently, I enabled "Forced User Mode," which instructs ZAP to perform all subsequent scans and requests as this authenticated user, mimicking a real attacker with valid credentials.
-Screenshot: ZAP Users configuration.
-Screenshot: ZAP Forced User Mode enabled.
+
+![](screenshots/5.png)
+
+![](screenshots/6.png)
 
 ### Automated Scanning:
 With the authenticated session established, I initiated a series of automated scans:
 * **Spider:** This crawled the application to discover all accessible URLs and resources.
 * **Ajax Spider:** This specifically targets AJAX-heavy applications to uncover dynamically loaded content and links often missed by traditional spiders.
 * **Active Scan:** This actively attacked the discovered endpoints with various payloads to identify vulnerabilities.
-Screenshot: ZAP Spider scan in progress.
-Screenshot: ZAP Ajax Spider scan in progress.
-Screenshot: ZAP Active Scan in progress.
+
+![](screenshots/7.png)
 
 ### Report Generation:
 Upon completion of the scans, I generated a concise HTML report from ZAP. This report provided a summary of identified alerts and detailed findings, which served as the basis for selecting a vulnerability to exploit.
-Screenshot: ZAP Report Generation options.
-Screenshot: Generated ZAP HTML report summary.
+
+![](screenshots/8.png)
 
 ---
 
@@ -71,37 +73,54 @@ Screenshot: Generated ZAP HTML report summary.
 
 ### Vulnerability Identification (Manual):
 From the ZAP report, an "Open Redirect" vulnerability was highlighted. To understand its context, I manually navigated the Juice Shop application in a Firefox browser. Using the Developer Tools (Inspector tab), I examined the `href` attributes of various links, looking for parameters that might control redirects.
-Screenshot: Firefox Developer Tools showing href attribute.
+
+![](screenshots/9.png)
 
 ### Targeting the GitHub Logo:
 I identified that the GitHub logo, when clicked, redirected to the official Juice Shop GitHub repository. This redirection mechanism was flagged by ZAP as potentially vulnerable.
-Screenshot: Juice Shop application with GitHub logo highlighted.
+
+![](screenshots/10.png)
 
 ### Code Analysis (main.js):
 To further investigate the redirection logic, I reviewed the `main.js` JavaScript file within the Developer Tools. This revealed the code responsible for handling the redirect to GitHub, confirming the presence of a redirection function.
-Screenshot: Firefox Developer Tools showing main.js content.
+
+![](screenshots/11.png)
 
 ### Whitelist Observation:
 During my analysis, I observed other redirect mechanisms within the application, suggesting the presence of an internal whitelist for allowed redirection targets. This indicated that a simple redirect to an arbitrary external URL might be blocked.
-Screenshot: Example of another redirect in the code.
+
+![](screenshots/12.png)
+
+### Vulnerability Identification (Manual & ZAP Confirmation):
+I clicked on the GitHub logo within the Juice Shop application. This action successfully redirected me to the official OWASP Juice Shop GitHub page. **The URL for this redirection was subsequently identified by OWASP ZAP as having an open redirect vulnerability during its analysis.**
+
+![](screenshots/13.png)
+
+In **ZAP's HTTP History tab**, I then identified the specific GET request that was made when clicking the GitHub logo. This request clearly showed the parameters being used for the redirect, confirming how the vulnerability could be leveraged.
+
+![](screenshots/14.png)
 
 ### Initial Attempt - Direct Redirect (Blocked):
 I attempted to redirect to `www.google.com` by modifying the URL directly in the browser with the payload `/redirect?to=https://www.google.com`. As anticipated, the application returned a "406 Not Acceptable" error, confirming the whitelist or validation mechanism.
-Screenshot: Browser URL with attempted redirect to https://www.google.com/url?sa=E&source=gmail&q=google.com.
-Screenshot: 406 error message.
+
+![](screenshots/15.png)
 
 ### Analyzing Request in ZAP History:
 To understand why the redirect failed, I examined the corresponding GET request in ZAP's HTTP History. This allowed me to see the exact request sent to the server and the server's response, including the HTTP status code and any error messages. This confirmed the application's rejection of the unwhitelisted URL.
-Screenshot: ZAP HTTP History showing the failed GET request and response.
+
+![](screenshots/16.png)
 
 ### Bypassing the Whitelist with a Malicious Payload:
 To circumvent the apparent whitelist, I constructed a more sophisticated payload: `/redirect?to=https://www.google.com/?pwned=https://github.com/juice-shop/juice-shop`. This payload aimed to trick the application by appending a whitelisted URL (`https://github.com/juice-shop/juice-shop`) as a parameter to my desired malicious URL (`https://www.google.com`). This technique often works when the application performs a substring check for whitelisted domains. Upon entering this URL, I was successfully redirected to google.com, demonstrating a successful bypass of the open redirect protection.
-Screenshot: Browser URL with successful redirect to https://www.google.com/url?sa=E&source=gmail&q=google.com using the bypass payload.
+
+![](screenshots/17.png)
 
 ### Verifying Exploitation in ZAP History:
 I located the successful redirection request in ZAP's HTTP History, confirming that the application processed my malicious payload and performed the redirect.
-Screenshot: ZAP HTTP History showing the successful GET request with the bypass payload.
+
+![](screenshots/18.png)
 
 ### Cleanup:
 After demonstrating the exploitation, I shut down the Juice Shop Docker container.
-Screenshot: Terminal showing Docker container shutdown.
+![](screenshots/19.png)
+
