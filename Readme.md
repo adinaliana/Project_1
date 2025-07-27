@@ -81,7 +81,8 @@ Upon completion of the scans, I generated a concise HTML/pdf report from ZAP. Th
 
 **Vulnerability Description:** Open Redirect vulnerabilities occur when a web application redirects a user to a URL specified by a user-controlled input without proper validation. This can be exploited to phish users or bypass security measures by redirecting them to malicious sites.
 
-### Vulnerability Identification (Manual):
+
+### Vulnerability Identification:
 From the ZAP report, an "Open Redirect" vulnerability was highlighted. To understand its context, I manually navigated the Juice Shop application in a Firefox browser. Using the Developer Tools (Inspector tab), I examined the `href` attributes of various links, looking for parameters that might control redirects.
 
 ![](screenshots/9.png)
@@ -143,5 +144,6 @@ I located the successful redirection request in ZAP's HTTP History, confirming t
 
 ### Cleanup:
 After demonstrating the exploitation, I shut down the Juice Shop Docker container.
+
 ![](screenshots/19.png)
 
